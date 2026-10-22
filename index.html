@@ -238,10 +238,11 @@ function openModal(i){
     <h2>${p.name}</h2>
     <div class="sub">${p.location}</div>
     ${p.video ? `<video controls src="${p.video}"></video>` : ''}
+    ${p.photos.length ? `
     <div class="section-label">Fotos</div>
     <div class="photo-grid">
-      ${p.photos.length ? p.photos.map(src=>`<div class="ph"><img src="${src}" alt="${p.name}"></div>`).join('') : `<div class="ph">Pendiente<br>(fotos por agregar)</div>`}
-    </div>
+      ${p.photos.map(src=>`<div class="ph"><img src="${src}" alt="${p.name}"></div>`).join('')}
+    </div>` : ''}
   `;
   modal.classList.add('open');
   document.body.style.overflow='hidden';
