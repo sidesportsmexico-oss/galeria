@@ -10,9 +10,9 @@
     --bg:#000000;
     --card:#111111;
     --border:#242424;
-    --accent:#116dff;
+    --accent:#003DFF;
     --text:#ffffff;
-    --muted:#8f8f8f;
+    --muted:#8a8a8e;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{
@@ -171,6 +171,110 @@
   @media(max-width:600px){
     header h1{font-size:1.7rem;}
   }
+
+  /* Verticales / Nuestros Lugares (estilo copiado de sidesports.mx) */
+  .verticales-section{
+    max-width:1400px;
+    margin:0 auto;
+    padding:60px 24px 100px;
+    border-top:1px solid var(--border);
+  }
+  .verticales-header{
+    text-align:center;
+    margin-bottom:36px;
+  }
+  .verticales-header h2{
+    font-family:"zuume","Helvetica Neue",Arial,sans-serif;
+    font-weight:700;
+    font-size:clamp(2.2rem,4vw,3.2rem);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .verticales-header p{
+    color:var(--muted);
+    margin-top:10px;
+    font-size:.95rem;
+  }
+  .filter-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:24px;
+  }
+  .filter-btn{
+    background:transparent;
+    color:var(--text);
+    border:1px solid rgba(255,255,255,.2);
+    padding:8px 18px;
+    border-radius:99px;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:.85rem;
+    cursor:pointer;
+    transition:all .25s ease;
+    white-space:nowrap;
+  }
+  .filter-btn:hover{border-color:rgba(255,255,255,.6);}
+  .filter-btn.active[data-filter="todos"]{background:#003DFF;border-color:#003DFF;box-shadow:0 4px 15px rgba(0,61,255,.35);}
+  .filter-btn.active[data-filter="hoteles"]{background:#D4AF37;border-color:#D4AF37;color:#000;box-shadow:0 4px 15px rgba(212,175,55,.35);}
+  .filter-btn.active[data-filter="ent"]{background:#D946EF;border-color:#D946EF;box-shadow:0 4px 15px rgba(217,70,239,.35);}
+  .filter-btn.active[data-filter="residencial"]{background:#10B981;border-color:#10B981;color:#000;box-shadow:0 4px 15px rgba(16,185,129,.35);}
+  .filter-btn.active[data-filter="inmob"]{background:#6366F1;border-color:#6366F1;box-shadow:0 4px 15px rgba(99,102,241,.35);}
+  .filter-btn.active[data-filter="clubes"]{background:#F97316;border-color:#F97316;box-shadow:0 4px 15px rgba(249,115,22,.35);}
+
+  .lugares-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:16px;
+    margin-top:36px;
+  }
+  .client-card{
+    height:240px;
+    border-radius:16px;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+    transition:filter .35s ease, opacity .35s ease;
+  }
+  .client-card img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .6s cubic-bezier(.25,.46,.45,.94);
+  }
+  .client-card:hover img{transform:scale(1.08);}
+  .client-card.dim{filter:grayscale(1) brightness(.55);opacity:.55;}
+  .card-overlay-cl{
+    position:absolute;inset:0;
+    background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.95) 100%);
+    pointer-events:none;
+  }
+  .card-title-cl{
+    position:absolute;bottom:16px;left:18px;right:18px;
+    margin:0;
+    font-family:"zuume","Helvetica Neue",Arial,sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    text-transform:uppercase;
+    text-shadow:0 2px 10px rgba(0,0,0,.8);
+  }
+
+  /* Modal de lugares con thumbs */
+  .gallery-media{padding:0;display:flex;flex-direction:column;gap:12px;}
+  .gallery-main-wrap{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:#111;margin-bottom:12px;}
+  .gallery-main-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gallery-thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;justify-content:center;}
+  .gallery-thumb{width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;cursor:pointer;border:2px solid transparent;opacity:.55;transition:opacity .2s,border-color .2s;}
+  .gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gallery-thumb.active{opacity:1;border-color:var(--accent);}
+  .vertical-tag{
+    display:inline-block;
+    margin-bottom:10px;
+    padding:4px 12px;
+    border-radius:99px;
+    font-size:.75rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
 </style>
 </head>
 <body>
@@ -182,11 +286,32 @@
 
 <div class="grid" id="grid"></div>
 
+<section class="verticales-section">
+  <div class="verticales-header">
+    <h2>Nuestros <span style="color:var(--accent)">Lugares</span></h2>
+    <p>Hoteles, clubes deportivos, desarrollos y centros de entretenimiento donde ya estamos.</p>
+    <div class="filter-buttons" id="filters">
+      <button class="filter-btn active" data-filter="todos">Todos</button>
+      <button class="filter-btn" data-filter="hoteles">Hoteles</button>
+      <button class="filter-btn" data-filter="ent">Centros de Ent.</button>
+      <button class="filter-btn" data-filter="residencial">Residencial</button>
+      <button class="filter-btn" data-filter="inmob">Desarrollo Inmob.</button>
+      <button class="filter-btn" data-filter="clubes">Clubes Deportivos</button>
+    </div>
+  </div>
+  <div class="lugares-grid" id="lugaresGrid"></div>
+</section>
+
 <footer>Side Sports · Galería de proyectos</footer>
 
 <div class="modal" id="modal">
   <div class="modal-close" onclick="closeModal()">&times;</div>
   <div class="modal-inner" id="modalInner"></div>
+</div>
+
+<div class="modal" id="lugarModal">
+  <div class="modal-close" onclick="closeLugarModal()">&times;</div>
+  <div class="modal-inner" id="lugarModalInner"></div>
 </div>
 
 <script>
@@ -260,9 +385,111 @@ function closeModal(){
   document.getElementById('modalInner').innerHTML='';
 }
 
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); closeLugarModal(); } });
 
 renderGrid();
+
+/* ===== Nuestros Lugares (verticales, copiado del sitio real) ===== */
+const CAT_LABEL = {
+  todos:"Todos", hoteles:"Hoteles", ent:"Centros de Ent.",
+  residencial:"Residencial", inmob:"Desarrollo Inmob.", clubes:"Clubes Deportivos"
+};
+const CAT_COLOR = {
+  hoteles:"#D4AF37", ent:"#D946EF", residencial:"#10B981", inmob:"#6366F1", clubes:"#F97316"
+};
+
+const LUGARES = [
+  { name:"Bowler", category:"ent", photos:["images/lugares/nuevos/bowler/bowler-1.jpg","images/lugares/nuevos/bowler/bowler-2.jpg","images/lugares/nuevos/bowler/bowler-3.jpg","images/lugares/nuevos/bowler/bowler-4.jpg","images/lugares/nuevos/bowler/bowler-5.jpg"], desc:"Transformación de pistas clásicas en un espacio de entretenimiento inmersivo con simuladores de golf y béisbol de alta resolución." },
+  { name:"Tee Shot", category:"ent", photos:["images/lugares/client-teezone.jpg"], desc:"Simuladores de golf de precisión absoluta para el entrenamiento y entretenimiento de sus socios." },
+  { name:"Innovasport Tijuana", category:"ent", photos:["images/lugares/nuevos/innovasport-tijuana/innovasport-tijuana-1.jpg","images/lugares/nuevos/innovasport-tijuana/innovasport-tijuana-2.jpg","images/lugares/nuevos/innovasport-tijuana/innovasport-tijuana-3.jpg","images/lugares/nuevos/innovasport-tijuana/innovasport-tijuana-4.jpg"], desc:"Escaparate interactivo de béisbol Batbox integrado a la tienda, para revolucionar la experiencia de compra." },
+  { name:"Mulligan's", category:"ent", photos:["images/lugares/client-mulligans.jpg"], desc:"El mejor concepto de indoor golf, integrando tecnología de simulación con un ambiente social y gastronómico." },
+  { name:"República", category:"ent", photos:["images/lugares/client-republica.jpg"], desc:"Club social equipado con amenidades tecnológicas de primera categoría para eventos exclusivos." },
+  { name:"Batbox", category:"ent", photos:["images/lugares/client-batbox.jpg"], desc:"El primer simulador de béisbol en México, combinando cajas de bateo virtuales con un restaurante-bar." },
+  { name:"Vidanta", category:"hoteles", photos:["images/lugares/client-vidanta.jpg"], desc:"Resorts de lujo. Modernizamos sus lobbies y áreas comunes con displays LED y domótica avanzada." },
+  { name:"Akumal", category:"inmob", photos:["images/lugares/nuevos/akumal/akumal-1.jpg","images/lugares/nuevos/akumal/akumal-2.jpg","images/lugares/nuevos/akumal/akumal-3.jpg","images/lugares/nuevos/akumal/akumal-4.jpg"], desc:"Simulador de golf integrado como amenidad de preventa en un desarrollo inmobiliario de San Pedro Garza García." },
+  { name:"AVA Cancún", category:"hoteles", photos:["images/lugares/nuevos/ava-cancun/ava-cancun-1.jpg","images/lugares/nuevos/ava-cancun/ava-cancun-2.jpg","images/lugares/nuevos/ava-cancun/ava-cancun-3.jpg"], desc:"Doble instalación TwoVision NX y Batbox en un desarrollo de Cancún, combinando golf y béisbol como amenidad diferenciadora." },
+  { name:"Bunker Swings & Beers", category:"ent", photos:["images/lugares/nuevos/bunker-swings/bunker-swings-1.jpg","images/lugares/nuevos/bunker-swings/bunker-swings-2.jpg","images/lugares/nuevos/bunker-swings/bunker-swings-3.jpg","images/lugares/nuevos/bunker-swings/bunker-swings-4.jpg"], desc:"Bar deportivo con simuladores de golf y béisbol, pensado para torneos casuales y ambiente social." },
+  { name:"City Golf", category:"clubes", photos:["images/lugares/nuevos/city-golf/city-golf-1.jpg","images/lugares/nuevos/city-golf/city-golf-2.jpg","images/lugares/nuevos/city-golf/city-golf-3.jpg","images/lugares/nuevos/city-golf/city-golf-4.jpg","images/lugares/nuevos/city-golf/city-golf-5.jpg","images/lugares/nuevos/city-golf/city-golf-6.jpg"], desc:"Centro de golf indoor con múltiples simuladores TwoVision, enfocado en entrenamiento y juego recreativo urbano." },
+  { name:"Fiesta Americana Los Cabos", category:"hoteles", photos:["images/lugares/nuevos/fiesta-americana-lc/fiesta-americana-lc-1.jpg","images/lugares/nuevos/fiesta-americana-lc/fiesta-americana-lc-2.jpg","images/lugares/nuevos/fiesta-americana-lc/fiesta-americana-lc-3.jpg","images/lugares/nuevos/fiesta-americana-lc/fiesta-americana-lc-4.jpg"], desc:"Amenidad de golf premium para huéspedes del hotel, disponible en cualquier condición climática." },
+  { name:"Hard Rock Hotel Cancún", category:"hoteles", photos:["images/lugares/nuevos/hard-rock-lc/hard-rock-lc-1.jpg","images/lugares/nuevos/hard-rock-lc/hard-rock-lc-2.jpg","images/lugares/nuevos/hard-rock-lc/hard-rock-lc-3.jpg"], desc:"Simulador de béisbol Batbox como experiencia de entretenimiento para huéspedes del resort." },
+  { name:"Hospital Ángeles", category:"inmob", photos:["images/lugares/nuevos/hospital-angeles/hospital-angeles-1.jpg","images/lugares/nuevos/hospital-angeles/hospital-angeles-2.jpg","images/lugares/nuevos/hospital-angeles/hospital-angeles-3.jpg","images/lugares/nuevos/hospital-angeles/hospital-angeles-4.jpg"], desc:"Espacio de golf indoor dentro de un complejo médico, pensado como amenidad de bienestar y esparcimiento." },
+  { name:"MS Millenium", category:"hoteles", photos:["images/lugares/nuevos/ms-millenium/ms-millenium-1.jpg","images/lugares/nuevos/ms-millenium/ms-millenium-2.jpg","images/lugares/nuevos/ms-millenium/ms-millenium-3.jpg","images/lugares/nuevos/ms-millenium/ms-millenium-4.jpg"], desc:"Instalación de golf indoor con simuladores de precisión para socios y visitantes del club." },
+  { name:"Querencia Los Cabos", category:"clubes", photos:["images/lugares/nuevos/querencia/querencia-1.jpg","images/lugares/nuevos/querencia/querencia-2.jpg","images/lugares/nuevos/querencia/querencia-3.jpg","images/lugares/nuevos/querencia/querencia-4.jpg"], desc:"TwoVision NX instalado en uno de los clubes de golf más exclusivos de Los Cabos, para práctica todo el año." },
+  { name:"Simulador en Mty", category:"residencial", photos:["images/lugares/nuevos/salvador-son/salvador-son-1.jpg","images/lugares/nuevos/salvador-son/salvador-son-2.jpg","images/lugares/nuevos/salvador-son/salvador-son-3.jpg","images/lugares/nuevos/salvador-son/salvador-son-4.jpg","images/lugares/nuevos/salvador-son/salvador-son-5.jpg"], desc:"Desarrollo inmobiliario con simuladores de golf y racing como parte de su propuesta de amenidades de alto nivel." },
+  { name:"Saqqara", category:"inmob", photos:["images/lugares/nuevos/saqqara/saqqara-1.jpg","images/lugares/nuevos/saqqara/saqqara-2.jpg","images/lugares/nuevos/saqqara/saqqara-3.jpg","images/lugares/nuevos/saqqara/saqqara-4.jpg"], desc:"Simuladores de golf integrados a un desarrollo residencial e inmobiliario como diferenciador de valor." },
+  { name:"Sports and Chips", category:"ent", photos:["images/lugares/nuevos/sport-and-chips/sport-and-chips-1.jpg","images/lugares/nuevos/sport-and-chips/sport-and-chips-2.jpg","images/lugares/nuevos/sport-and-chips/sport-and-chips-3.jpg","images/lugares/nuevos/sport-and-chips/sport-and-chips-4.jpg","images/lugares/nuevos/sport-and-chips/sport-and-chips-5.jpg"], desc:"Simuladores de béisbol Strikezon en un centro de entretenimiento de Ciudad de México, referente del sector." },
+  { name:"Summit (Rep. Dominicana)", category:"ent", photos:["images/lugares/nuevos/summit-rep-dom/summit-rep-dom-1.jpg","images/lugares/nuevos/summit-rep-dom/summit-rep-dom-2.jpg","images/lugares/nuevos/summit-rep-dom/summit-rep-dom-3.jpg","images/lugares/nuevos/summit-rep-dom/summit-rep-dom-4.jpg"], desc:"Jaulas de bateo Batbox instaladas en República Dominicana, primera expansión de Side Sports fuera de México." },
+  { name:"U Fit", category:"clubes", photos:["images/lugares/nuevos/u-fit/u-fit-1.jpg","images/lugares/nuevos/u-fit/u-fit-2.jpg","images/lugares/nuevos/u-fit/u-fit-3.jpg","images/lugares/nuevos/u-fit/u-fit-4.jpg"], desc:"Simulador de golf integrado a un centro deportivo, combinando entrenamiento físico y golf indoor." },
+  { name:"Universo Golf", category:"ent", photos:["images/lugares/nuevos/universo-golf/universo-golf-1.jpg","images/lugares/nuevos/universo-golf/universo-golf-2.jpg","images/lugares/nuevos/universo-golf/universo-golf-3.jpg","images/lugares/nuevos/universo-golf/universo-golf-4.jpg"], desc:"Centro especializado en golf indoor con múltiples simuladores para clases, práctica y torneos internos." }
+];
+
+let currentLugaresFilter = "todos";
+
+function renderLugares(){
+  const grid = document.getElementById('lugaresGrid');
+  grid.innerHTML = LUGARES.map((l,i)=>{
+    const dim = currentLugaresFilter!=="todos" && l.category!==currentLugaresFilter;
+    return `
+    <div class="client-card ${dim?'dim':''}" onclick="openLugarModal(${i})">
+      <img src="${l.photos[0]}" alt="${l.name}" loading="lazy">
+      <div class="card-overlay-cl"></div>
+      <h3 class="card-title-cl">${l.name}</h3>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('filters').addEventListener('click', e=>{
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  currentLugaresFilter = btn.getAttribute('data-filter');
+  document.querySelectorAll('#filters .filter-btn').forEach(b=>{
+    b.classList.toggle('active', b===btn);
+  });
+  renderLugares();
+});
+
+let currentLugar = null;
+let currentLugarPhotoIdx = 0;
+
+function openLugarModal(i){
+  currentLugar = LUGARES[i];
+  currentLugarPhotoIdx = 0;
+  renderLugarModal();
+  document.getElementById('lugarModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderLugarModal(){
+  const l = currentLugar;
+  const color = CAT_COLOR[l.category] || 'var(--accent)';
+  const inner = document.getElementById('lugarModalInner');
+  inner.innerHTML = `
+    <span class="vertical-tag" style="background:${color};color:#000">${CAT_LABEL[l.category]}</span>
+    <h2>${l.name}</h2>
+    <div class="sub">${l.desc}</div>
+    <div class="gallery-media">
+      <div class="gallery-main-wrap">
+        <img id="lugarMainImg" src="${l.photos[currentLugarPhotoIdx]}" alt="${l.name}">
+      </div>
+      ${l.photos.length>1 ? `<div class="gallery-thumbs">
+        ${l.photos.map((src,idx)=>`<div class="gallery-thumb ${idx===currentLugarPhotoIdx?'active':''}" onclick="setLugarPhoto(${idx})"><img src="${src}"></div>`).join('')}
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function setLugarPhoto(idx){
+  currentLugarPhotoIdx = idx;
+  renderLugarModal();
+}
+
+function closeLugarModal(){
+  document.getElementById('lugarModal').classList.remove('open');
+  document.body.style.overflow='auto';
+  document.getElementById('lugarModalInner').innerHTML='';
+}
+
+renderLugares();
 </script>
 
 </body>
