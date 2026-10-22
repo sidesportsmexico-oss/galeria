@@ -427,7 +427,11 @@ let currentLugaresFilter = "todos";
 
 function renderLugares(){
   const grid = document.getElementById('lugaresGrid');
-  grid.innerHTML = LUGARES.map((l,i)=>{
+  const indexed = LUGARES.map((l,i)=>({l,i}));
+  const matched = indexed.filter(o => currentLugaresFilter==="todos" || o.l.category===currentLugaresFilter);
+  const rest = indexed.filter(o => !(currentLugaresFilter==="todos" || o.l.category===currentLugaresFilter));
+  const ordered = [...matched, ...rest];
+  grid.innerHTML = ordered.map(({l,i})=>{
     const dim = currentLugaresFilter!=="todos" && l.category!==currentLugaresFilter;
     return `
     <div class="client-card ${dim?'dim':''}" onclick="openLugarModal(${i})">
