@@ -186,24 +186,10 @@
 <script>
 const PROJECTS = [
   {
-    id:"vidanta-vallarta",
-    name:"Vidanta Vallarta",
-    location:"Puerto Vallarta, Jalisco",
-    video:null,
-    photos:[]
-  },
-  {
     id:"vidanta-cabos",
     name:"Vidanta Los Cabos",
     location:"Los Cabos, Baja California Sur",
     video:"videos/vidanta.mp4",
-    photos:[]
-  },
-  {
-    id:"hard-rock-golf",
-    name:"Hard Rock Golf Club Riviera Maya",
-    location:"Riviera Maya, Quintana Roo",
-    video:null,
     photos:[]
   },
   {
@@ -221,11 +207,11 @@ const PROJECTS = [
     photos:[]
   },
   {
-    id:"cove-club",
-    name:"Cove Club Cabo del Sol",
-    location:"Cabo del Sol, Baja California Sur",
+    id:"ava-cancun",
+    name:"AVA Cancún",
+    location:"Cancún, Quintana Roo",
     video:null,
-    photos:[]
+    photos:["images/ava/ava-1.jpg","images/ava/ava-2.jpg","images/ava/ava-3.jpg","images/ava/ava-4.jpg","images/ava/ava-5.jpg","images/ava/ava-6.jpg","images/ava/ava-7.jpg","images/ava/ava-8.jpg","images/ava/ava-9.jpg","images/ava/ava-10.jpg","images/ava/ava-11.jpg","images/ava/ava-12.jpg","images/ava/ava-13.jpg","images/ava/ava-14.jpg","images/ava/ava-15.jpg"]
   }
 ];
 
@@ -234,7 +220,7 @@ function renderGrid(){
   grid.innerHTML = PROJECTS.map((p,i)=>`
     <div class="card" onclick="openModal(${i})">
       <div class="thumb">
-        ${p.video ? `<video muted loop playsinline src="${p.video}#t=0.5" preload="metadata"></video><span class="play-badge">VIDEO</span>` : `<span class="placeholder">Fotos próximamente</span>`}
+        ${p.video ? `<video muted loop playsinline src="${p.video}#t=0.5" preload="metadata"></video><span class="play-badge">VIDEO</span>` : (p.photos.length ? `<img src="${p.photos[0]}" style="width:100%;height:100%;object-fit:cover;" alt="${p.name}">` : `<span class="placeholder">Fotos próximamente</span>`)}
       </div>
       <div class="info">
         <h2>${p.name}</h2>
